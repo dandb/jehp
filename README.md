@@ -29,16 +29,18 @@ Order of Status Operation
 -------------------------
 ```
 Passed < Running Passed Previously
-Running Passed Previously < Aborted
+Running Passed Previously < Not Built, Disabled
+Not Built, Disabled < Aborted
 Aborted < Running Aborted Previously
-Running Aborted Previously < Running Failed Previously 
+Running Aborted Previously < Unstable
+Unstable <  Running Failed Previously 
 Running Failed Previously < Fail
 ```
 
 Jenkins has 3 basic status returns. Those are blue (passed), aborted, and red (failed). Each of these return with "_anim" if the job is currently executing.
 Running jobs always take precedence in status, with the exception of failures, for group health. The reason for this is potential for change. If all of your jobs have passed but one is currently running you may have an aborted or failed job in the near future. If all of your jobs are failed but one is running, the rest of your jobs will still be in a failed state when it concludes.
 
-If you see a yellow cell appear that means a job in your config was not found in the xml Jenkins returned. The missing job name will be in the cell.
+If you see a orange cell appear that means a job in your config was not found in the xml Jenkins returned. The missing job name will be in the cell.
 
 Configuration
 -------------
