@@ -1,0 +1,14 @@
+{
+	"groups": [
+		{"name": "PassedGroup", "status": "passed", "count": "1"},
+		{"name": "FailedGroup", "status": "fail", "count": "2"}
+	]
+,
+	"jobs": [
+		{"name": "Pass", "status": "passed", "group": "PassedGroup", "subtabid": "11"},
+		{"name": "Pass", "status": "passed", "group": "PassedGroup", "subtabid": "12"},
+		{"name": "Pass", "status": "passed", "group": "PassedGroup", "subtabid": "13"},
+		{"name": "Pass", "status": "passed", "group": "FailedGroup", "subtabid": "21"},
+		{"name": "Fail", "status": "fail", "group": "FailedGroup", "subtabid": "22"}
+	]
+}

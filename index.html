@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" ng-app="jehpApp">
+<head>
+  <meta charset="utf-8">
+  
+  <title>JEHP</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/app.css">
+
+  <script src="js/angular.min.js"></script>
+  <script src="js/angular-route.js"></script>
+  <script src="js/angular-resource.min.js"></script>
+  <script src="js/app.js"></script>
+
+
+  <script src="js/controllers.js"></script>
+  <style type="text/css">
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+</style>
+
+<style type="text/css">
+body {background-color:#000000;}
+li a{text-align:center; color:#FFFFFF;text-shadow: 1px 1px 2px #000000;}
+a:hover {text-align:center; color:#FFFFFF;text-shadow: 1px 1px 2px #000000;}
+a:focus {text-align:center; color:#FFFFFF;text-shadow: 1px 1px 2px #000000;}
+.passed {background-color:#2AC738;}
+.failed {background-color:#FF0000;}
+.bailed {background-color:#FFD600;}
+.notbuilt {background-color:#FFD600;}
+.disabledbuild {background-color:#FFD600;}
+.unstable {background-color:#FFD600;}
+.not_found {background-color:#FF7700;}
+.run_pass {background-color:#2AC738;animation: blink 1s steps(5, start) infinite;-webkit-animation: blink 1s steps(5, start) infinite;}
+.run_fail {background-color:#FF0000;animation: blink 1s steps(5, start) infinite;-webkit-animation: blink 1s steps(5, start) infinite;}
+.run_bail {background-color:#FFD600;animation: blink 1s steps(5, start) infinite;-webkit-animation: blink 1s steps(5, start) infinite;}
+@keyframes blink { to { visibility: hidden; }}
+@-webkit-keyframes blink { to { visibility: hidden; }}
+</style>
+</head>
+<body>
+
+  <div ng-view></div>
+
+
+  <script src="js/jquery.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+</body>
+</html>
