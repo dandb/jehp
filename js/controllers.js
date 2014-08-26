@@ -24,37 +24,20 @@ jehpControllers.controller('JobCtrl', function($scope, $http, $timeout, dataServ
       $scope.activeSubTab = tabToSwitchTo;
     }
 
-    //for debug purposes
-    $scope.$watch('jobs', function() {
-        //console.log('hey, jobs has changed!');
-    });
-    $scope.$watch('groups', function(){
-        //console.log('hey, groups has changed!');
-    });
 
     $http.get('json/allJobs.json',
         //success
         function(data){
-            console.log("success");
             $scope.jobs = data.jobs;
             $scope.groups = data.groups;
         },
         //failure
         function(){
-            //console.log("error");
             dataService.calculateJson();
-            $http.get('json/defaultJobs.json', function(data){
-                $scope.jobs = data.jobs;
-                $scope.groups = data.groups;
-            });
     });
-
-
-
 
     setInterval(function() {
         dataService.calculateJson();
-        $scope.changeDetected = false;
         $http.get('json/allJobs.json').success(function(data) {
             $scope.tempJobs = data.jobs;
             $scope.tempGroups = data.groups;
@@ -63,24 +46,17 @@ jehpControllers.controller('JobCtrl', function($scope, $http, $timeout, dataServ
             if(angular.equals($scope.tempJobs, $scope.jobs) == false)
             {
                 $scope.jobs = $scope.tempJobs;
-                $scope.changeDetected = true;
             }
 
             //update groups if they have changed
             if(angular.equals($scope.tempGroups, $scope.groups) == false)
             {
                 $scope.groups = $scope.tempGroups;
-                $scope.changeDetected = true;
             }
         })
         .error(function(){
-            //console.log("error in interval");
-            dataService.calculateJson()();
+            dataService.calculateJson();
         });
-        if($scope.changeDetected == true){
-          $scope.$apply();
-          console.log("updated");
-        }
           
     }, 5000);
    
@@ -118,7 +94,6 @@ jehpApp.service('dataService', function($http){
 
   this.calculateJson = function(){
     $http.get('groupStatusesWriter.php').success(function(data){
-          console.log("working..."); 
     });
   }
 
