@@ -58,14 +58,16 @@
                 } elseif ($color == 'notbuilt') {
                     $status = "notbuilt";
                     break;
-		} elseif ($color == 'disabled') {
+                } elseif ($color == 'disabled') {
                     $status = "disabledbuild";
                     break;
-		} elseif ($color == 'yellow') {
+                } elseif ($color == 'yellow') {
                     $status = "unstable";
                     break;
-                } 
-		
+                } elseif ($color == 'yellow_anime') {
+                    $status = "run_unstable";
+                    break;
+                }
             }
         endforeach;
         if ( $status=="" ) {
@@ -83,10 +85,16 @@
     $curKey = '';
     $pass = false;
     $count = 1;
-
+    $isAJobRunning = false;
+    $worstJobStatus = 0;
+    $curJobStatus = 0;
+    $statusArray = array("passed", "run_pass", "notbuilt", "disabledbuild", "bailed", "run_bail", "unstable", "run_unstable", "failed", "run_fail");
     foreach($grpList as $key => $block) {
-        $mainStat="passed";
         $subcount = 1;
+        $isAJobRunning = false;
+        $worstJobStatus = 0;
+        $curJobStatus = 0;
+
         foreach($block as $index => $value) {
             $valStat = get_job_status($jobs,$value);
             $jobList .= "\t\t{\"name\": \"" . $value . "\", \"status\": \"" . $valStat . "\", \"group\": \"" . $key . "\", \"subtabid\": \"". $count . $subcount .  "\"},\n";
@@ -95,43 +103,67 @@
             }
             
             switch($valStat){
+                case "passed":
+                    $curJobStatus = 0;
+                    break;
                 case "run_pass":
-                    if ($mainStat=="passed") {
-                        $mainStat = $valStat;
-                    }
+                    $curJobStatus = 1;
+                    $isAJobRunning = true;
+                    break;
                 case "notbuilt":
-                    if ($mainStat=="passed" || $mainStat=="run_pass") {
-                        $mainStat=$valStat;
-                    }
+                    $curJobStatus = 2;
+                    break;
                 case "disabledbuild":
-                    if ($mainStat=="passed" || $mainStat=="run_pass") {
-                        $mainStat=$valStat;
-                    } 
+                    $curJobStatus = 3;
+                    break;
                 case "bailed":
-                    if ($mainStat=="passed" || $mainStat=="run_pass" || $mainStat=="notbuilt" || $mainStat=="disabled") {
-                        $mainStat=$valStat;
-                    }
+                    $curJobStatus = 4;
+                    break;
                 case "run_bail":
-                    if ($mainStat=="passed" || $mainStat=="run_pass" || $mainStat=="notbuilt" || $mainStat=="disabled" || $mainStat=="bailed") {
-                        $mainStat=$valStat;
-                    }
+                    $curJobStatus = 5;
+                    $isAJobRunning = true;
+                    break;
                 case "unstable":
-                    if ($mainStat=="passed" || $mainStat=="run_pass" || $mainStat=="notbuilt" || $mainStat=="disabled" || $mainStat=="bailed" || $mainStat=="run_bail") {
-                        $mainStat=$valStat;
-                    }
-                case "run_fail":
-                    if ($mainStat=="passed" || $mainStat=="run_pass" || $mainStat=="notbuilt" || $mainStat=="disabled" || $mainStat=="bailed" || $mainStat=="run_bail" || $mainStat=="unstable") {
-                        $mainStat=$valStat;
-                    }
+                    $curJobStatus = 6;
+                    break;
+                case "run_unstable":
+                    $curJobStatus = 7;
+                    $isAJobRunning = true;
+                    break;
                 case "failed":
-                    $mainStat=$valStat;
+                    $curJobStatus = 8;
+                    break;
+                case "run_fail":
+                    $curJobStatus = 9;
+                    $isAJobRunning = true;
+                    break;
                 default:
+            }
+
+            if($curJobStatus > $worstJobStatus) {
+                $worstJobStatus = $curJobStatus;
             }
 
             $subcount = $subcount + 1;
         }
 
-        $groups .= "\t\t{\"name\": \"" . $key . "\", \"status\": \"" . $mainStat . "\", \"count\": \"" . $count . "\"},\n";
+        if($isAJobRunning){
+                switch($worstJobStatus) {
+                    case 2:
+                    case 3:
+                    case 4:
+                        $worstJobStatus=5;
+                        break;
+                    case 6:
+                        $worstJobStatus=7;
+                        break;
+                    case 8:
+                        $worstJobStatus=9;
+                        break;
+                }
+        }
+
+        $groups .= "\t\t{\"name\": \"" . $key . "\", \"status\": \"" . $statusArray[$worstJobStatus] . "\", \"count\": \"" . $count . "\"},\n";
         $count = $count + 1;
     }
     $groups = substr($groups, 0, -2); //cut off extra new line and comma at the end
@@ -141,9 +173,5 @@
     $mainJson = "";
     $mainJson .= "{\n\t" . $groups . ",\n\t" . $jobList . "}\n";
     file_put_contents($finalPage,$mainJson);
-
-    //header('Content-Type: application/json');
-    //echo $mainJson;
-
 
 ?>
