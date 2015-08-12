@@ -35,7 +35,7 @@ class GroupsList {
     }
 
     public function groupFailOnly() {
-        if(strlen($groupYellow)==0) { //To display red group first
+        if(strlen($this->groupYellow)==0) { //To display red group first //changed
             $this->groupRed = substr($this->groupRed, 0, -2);
             $this->groupFailOnly .= $this->groupRed;
         } else {

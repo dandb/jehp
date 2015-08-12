@@ -1,7 +1,7 @@
 <?php
 class JenkinsConfig {
     public function getValues() {
-      return array_values(parse_ini_file('config'));
+        return array_values(parse_ini_file('config'));
     }
 
     public function getUser() {
@@ -17,10 +17,11 @@ class JenkinsConfig {
     }
 
     public function getUrl() {
-      return "https://".$this->getUser().":".$this->getPass()."@".$this->getSite()."/api/xml";
+        return "https://".$this->getUser().":".$this->getPass()."@".$this->getSite()."/api/xml";
     }
 
     public function writeToStatusXml() {
+        $url = $this->getUrl();
         if($xml = file_get_contents($this->getUrl())) {
             if(!file_exists('results/status.xml')) {
                 mkdir('results', 0664, true);
